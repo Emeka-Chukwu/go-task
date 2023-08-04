@@ -14,3 +14,8 @@ type RegisterResponse struct {
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
+
+type LoginResponse struct {
+	RegisterResponse
+	Token string `json:"token"`
+}
