@@ -1,4 +1,4 @@
-package packageError
+package auths
 
 import (
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
