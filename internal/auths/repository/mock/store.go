@@ -10,6 +10,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	uuid "github.com/google/uuid"
 )
 
 // MockAuthentication is a mock of Authentication interface.
@@ -35,32 +36,62 @@ func (m *MockAuthentication) EXPECT() *MockAuthenticationMockRecorder {
 	return m.recorder
 }
 
-// login mocks base method.
-func (m *MockAuthentication) login(arg0 domain.LoginModel) (domain0.RegisterResponse, error) {
+// GetUserByEmail mocks base method.
+func (m *MockAuthentication) GetUserByEmail(arg0 string) (*domain0.RegisterResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "login", arg0)
-	ret0, _ := ret[0].(domain0.RegisterResponse)
+	ret := m.ctrl.Call(m, "GetUserByEmail", arg0)
+	ret0, _ := ret[0].(*domain0.RegisterResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// login indicates an expected call of login.
-func (mr *MockAuthenticationMockRecorder) login(arg0 interface{}) *gomock.Call {
+// GetUserByEmail indicates an expected call of GetUserByEmail.
+func (mr *MockAuthenticationMockRecorder) GetUserByEmail(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "login", reflect.TypeOf((*MockAuthentication)(nil).login), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByEmail", reflect.TypeOf((*MockAuthentication)(nil).GetUserByEmail), arg0)
 }
 
-// register mocks base method.
-func (m *MockAuthentication) register(arg0 domain.RegisterModel) (domain0.RegisterResponse, error) {
+// GetUserByID mocks base method.
+func (m *MockAuthentication) GetUserByID(arg0 uuid.UUID) (*domain0.RegisterResponse, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "register", arg0)
-	ret0, _ := ret[0].(domain0.RegisterResponse)
+	ret := m.ctrl.Call(m, "GetUserByID", arg0)
+	ret0, _ := ret[0].(*domain0.RegisterResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// register indicates an expected call of register.
-func (mr *MockAuthenticationMockRecorder) register(arg0 interface{}) *gomock.Call {
+// GetUserByID indicates an expected call of GetUserByID.
+func (mr *MockAuthenticationMockRecorder) GetUserByID(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "register", reflect.TypeOf((*MockAuthentication)(nil).register), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockAuthentication)(nil).GetUserByID), arg0)
+}
+
+// Login mocks base method.
+func (m *MockAuthentication) Login(arg0 domain.LoginModel) (*domain0.LoginResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Login", arg0)
+	ret0, _ := ret[0].(*domain0.LoginResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Login indicates an expected call of Login.
+func (mr *MockAuthenticationMockRecorder) Login(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockAuthentication)(nil).Login), arg0)
+}
+
+// Register mocks base method.
+func (m *MockAuthentication) Register(arg0 domain.RegisterModel) (*domain0.RegisterResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Register", arg0)
+	ret0, _ := ret[0].(*domain0.RegisterResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Register indicates an expected call of Register.
+func (mr *MockAuthenticationMockRecorder) Register(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Register", reflect.TypeOf((*MockAuthentication)(nil).Register), arg0)
 }
