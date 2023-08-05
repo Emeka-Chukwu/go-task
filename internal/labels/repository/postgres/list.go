@@ -6,7 +6,7 @@ import (
 )
 
 // List implements Label.
-func (lab *label) List() ([]resp.LabelResponse, error) {
+func (lab *label) List() (*[]resp.LabelResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 	stmp := `selecte id, name, created_at, updated_at from labels`
@@ -17,5 +17,5 @@ func (lab *label) List() ([]resp.LabelResponse, error) {
 		rows.Scan(&model.ID, &model.Name, &model.CreatedAt, &model.UpdatedAt)
 		labels = append(labels, model)
 	}
-	return labels, err
+	return &labels, err
 }
