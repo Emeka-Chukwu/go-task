@@ -51,6 +51,20 @@ func (mr *MockLabelMockRecorder) Create(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockLabel)(nil).Create), arg0)
 }
 
+// CreateTaskLabel mocks base method.
+func (m *MockLabel) CreateTaskLabel(arg0 domain.LabelTaskModel) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "CreateTaskLabel", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// CreateTaskLabel indicates an expected call of CreateTaskLabel.
+func (mr *MockLabelMockRecorder) CreateTaskLabel(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateTaskLabel", reflect.TypeOf((*MockLabel)(nil).CreateTaskLabel), arg0)
+}
+
 // Delete mocks base method.
 func (m *MockLabel) Delete(arg0 uuid.UUID) error {
 	m.ctrl.T.Helper()
@@ -81,10 +95,10 @@ func (mr *MockLabelMockRecorder) GetByID(arg0 interface{}) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockLabel) List() ([]domain0.LabelResponse, error) {
+func (m *MockLabel) List() (*[]domain0.LabelResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List")
-	ret0, _ := ret[0].([]domain0.LabelResponse)
+	ret0, _ := ret[0].(*[]domain0.LabelResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -93,6 +107,36 @@ func (m *MockLabel) List() ([]domain0.LabelResponse, error) {
 func (mr *MockLabelMockRecorder) List() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockLabel)(nil).List))
+}
+
+// ListByLabel mocks base method.
+func (m *MockLabel) ListByLabel() (*[]domain0.LabelTaskResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByLabel")
+	ret0, _ := ret[0].(*[]domain0.LabelTaskResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByLabel indicates an expected call of ListByLabel.
+func (mr *MockLabelMockRecorder) ListByLabel() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByLabel", reflect.TypeOf((*MockLabel)(nil).ListByLabel))
+}
+
+// ListByLabelID mocks base method.
+func (m *MockLabel) ListByLabelID(arg0 uuid.UUID) (*domain0.LabelTaskResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListByLabelID", arg0)
+	ret0, _ := ret[0].(*domain0.LabelTaskResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ListByLabelID indicates an expected call of ListByLabelID.
+func (mr *MockLabelMockRecorder) ListByLabelID(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListByLabelID", reflect.TypeOf((*MockLabel)(nil).ListByLabelID), arg0)
 }
 
 // Update mocks base method.

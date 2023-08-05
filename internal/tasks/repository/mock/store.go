@@ -66,10 +66,10 @@ func (mr *MockTaskMockRecorder) DeleteTask(arg0 interface{}) *gomock.Call {
 }
 
 // FetchTask mocks base method.
-func (m *MockTask) FetchTask() ([]*domain0.TaskResponse, error) {
+func (m *MockTask) FetchTask() (*[]domain0.TaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchTask")
-	ret0, _ := ret[0].([]*domain0.TaskResponse)
+	ret0, _ := ret[0].(*[]domain0.TaskResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -81,7 +81,7 @@ func (mr *MockTaskMockRecorder) FetchTask() *gomock.Call {
 }
 
 // UpdateTask mocks base method.
-func (m *MockTask) UpdateTask(arg0 domain.TaskModel, arg1 uuid.UUID) (*domain0.TaskResponse, error) {
+func (m *MockTask) UpdateTask(arg0 domain.UpdateTaskModel, arg1 uuid.UUID) (*domain0.TaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateTask", arg0, arg1)
 	ret0, _ := ret[0].(*domain0.TaskResponse)
