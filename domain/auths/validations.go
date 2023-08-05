@@ -24,6 +24,15 @@ func ValidateString(value string, minLength int, maxLength int) error {
 	}
 	return nil
 }
+func IsContained(value string, list []string) error {
+	err := fmt.Errorf("%s not supported", value)
+	for _, element := range list {
+		if strings.EqualFold(value, element) {
+			err = nil
+		}
+	}
+	return err
+}
 
 func ValidateNotEmptyString(value string) error {
 	n := len(value)
