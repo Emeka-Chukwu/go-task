@@ -3,6 +3,6 @@ package tasks
 import "github.com/google/uuid"
 
 // Delete implements Task.
-func (*task) Delete(id uuid.UUID) error {
+func (*task) DeleteTask(id uuid.UUID) error {
 	panic("unimplemented")
 }

@@ -12,8 +12,8 @@ import (
 type Task interface {
 	CreateTask(data domain.TaskModel) (*resp.TaskResponse, error)
 	UpdateTask(data domain.TaskModel, id uuid.UUID) (*resp.TaskResponse, error)
-	Fetch() ([]*resp.TaskResponse, error)
-	Delete(id uuid.UUID) error
+	FetchTask() ([]*resp.TaskResponse, error)
+	DeleteTask(id uuid.UUID) error
 }
 
 type task struct {
