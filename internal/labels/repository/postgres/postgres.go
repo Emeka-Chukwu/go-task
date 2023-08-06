@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	domain "go-task/domain/label/request"
 	resp "go-task/domain/label/response"
-	"go-task/token"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,22 +14,21 @@ const (
 )
 
 type label struct {
-	DB    *sql.DB
-	token token.Maker
+	DB *sql.DB
 }
 
-func NewAuthentication(db *sql.DB, tokenMaker token.Maker) Label {
-	return &label{DB: db, token: tokenMaker}
+func NewLabel(db *sql.DB) Label {
+	return &label{DB: db}
 
 }
 
 type Label interface {
-	Create(data domain.LabelModel) (*resp.LabelResponse, error)
+	Create(data domain.LabelModel) (resp.LabelResponse, error)
 	CreateTaskLabel(data domain.LabelTaskModel) error
-	Update(id uuid.UUID, data domain.LabelModel) (*resp.LabelResponse, error)
-	GetByID(id uuid.UUID) (*resp.LabelResponse, error)
-	List() (*[]resp.LabelResponse, error)
-	ListByLabel() (*[]resp.LabelTaskResponse, error)
-	ListByLabelID(labelID uuid.UUID) (*resp.LabelTaskResponse, error)
+	Update(id uuid.UUID, data domain.LabelModel) (resp.LabelResponse, error)
+	GetByID(id uuid.UUID) (resp.LabelResponse, error)
+	List() ([]resp.LabelResponse, error)
+	ListByLabel() ([]resp.LabelTaskResponse, error)
+	ListByLabelID(labelID uuid.UUID) (resp.LabelTaskResponse, error)
 	Delete(id uuid.UUID) error
 }

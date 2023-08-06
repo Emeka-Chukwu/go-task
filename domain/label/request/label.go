@@ -4,6 +4,7 @@ import (
 	field "go-task/domain"
 	"go-task/domain/auths"
 
+	"github.com/google/uuid"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 )
 
@@ -25,6 +26,6 @@ func (req *LabelModel) ValidateLabel() (violations []*errdetails.BadRequest_Fiel
 }
 
 type LabelTaskModel struct {
-	LabelID string `json:"label_id"`
-	TaskID  string `json:"task_id"`
+	LabelID uuid.UUID `json:"label_id"`
+	TaskID  uuid.UUID `json:"task_id"`
 }

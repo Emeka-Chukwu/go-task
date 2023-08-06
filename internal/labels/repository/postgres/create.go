@@ -7,7 +7,7 @@ import (
 )
 
 // Create implements Label.
-func (lab *label) Create(data domain.LabelModel) (*resp.LabelResponse, error) {
+func (lab *label) Create(data domain.LabelModel) (resp.LabelResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 	stmp := `insert into labels (name) values ($1) returning id, name, created_at, updated_at`
@@ -19,5 +19,5 @@ func (lab *label) Create(data domain.LabelModel) (*resp.LabelResponse, error) {
 			&label.CreatedAt,
 			&label.UpdatedAt,
 		)
-	return &label, err
+	return label, err
 }

@@ -6,7 +6,7 @@ import (
 )
 
 // ListByLabel implements Label.
-func (l *label) ListByLabel() (*[]resp.LabelTaskResponse, error) {
+func (l *label) ListByLabel() ([]resp.LabelTaskResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 	stmp := ` SELECT l.id, l.name, l.created_at, l.updated_at, json_agg(t.*) AS tasks
@@ -21,5 +21,5 @@ func (l *label) ListByLabel() (*[]resp.LabelTaskResponse, error) {
 		rows.Scan(&result.ID, &result.Name, &result.CreatedAt, &result.UpdatedAt, &result.Tasks)
 		labels = append(labels, result)
 	}
-	return &labels, err
+	return labels, err
 }

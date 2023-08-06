@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	uuid "github.com/jackc/pgx/pgtype/ext/satori-uuid"
+	"github.com/google/uuid"
 )
 
 type LabelResponse struct {

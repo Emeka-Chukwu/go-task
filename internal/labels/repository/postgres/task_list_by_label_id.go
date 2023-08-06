@@ -8,7 +8,7 @@ import (
 )
 
 // ListByLabelID implements Label.
-func (l *label) ListByLabelID(labelID uuid.UUID) (*resp.LabelTaskResponse, error) {
+func (l *label) ListByLabelID(labelID uuid.UUID) (resp.LabelTaskResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 	stmp := `  SELECT l.*, json_agg(t.*) AS tasks
@@ -26,5 +26,5 @@ func (l *label) ListByLabelID(labelID uuid.UUID) (*resp.LabelTaskResponse, error
 			&result.UpdatedAt,
 			&result.Tasks,
 		)
-	return &result, err
+	return result, err
 }

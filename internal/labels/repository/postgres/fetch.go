@@ -8,10 +8,10 @@ import (
 )
 
 // GetByID implements Label.
-func (lab *label) GetByID(id uuid.UUID) (*resp.LabelResponse, error) {
+func (lab *label) GetByID(id uuid.UUID) (resp.LabelResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
-	stmp := `selecte id, name, created_at, updated_at from labels where id=$1`
+	stmp := `select id, name, created_at, updated_at from labels where id=$1`
 	var label resp.LabelResponse
 	err := lab.DB.QueryRowContext(ctx, stmp, id).
 		Scan(
@@ -20,5 +20,5 @@ func (lab *label) GetByID(id uuid.UUID) (*resp.LabelResponse, error) {
 			&label.CreatedAt,
 			&label.UpdatedAt,
 		)
-	return &label, err
+	return label, err
 }
