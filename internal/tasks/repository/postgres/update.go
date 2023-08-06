@@ -9,13 +9,13 @@ import (
 )
 
 // UpdateTask implements Task.
-func (t *task) UpdateTask(data domain.UpdateTaskModel, id uuid.UUID) (*resp.TaskResponse, error) {
+func (t *task) UpdateTask(data domain.UpdateTaskModel, id uuid.UUID) (resp.TaskResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
 	defer cancel()
 	stmt := `update tasks set title=$1, description=$2, status=$3, priority=$4, due_date=$5  where id=$6 returning id, 
-	title description, status, priority, due_date, created_at, updated_at`
+	title, description, status, priority, due_date, created_at, updated_at`
 	var model resp.TaskResponse
-	err := t.DB.QueryRowContext(ctx, stmt, data.Title, data.Description, &data.Status, &data.Priority, &data.DueDate, id).
+	err := t.db.QueryRowContext(ctx, stmt, data.Title, data.Description, &data.Status, &data.Priority, &data.DueDate, id).
 		Scan(
 			&model.ID,
 			&model.Title,
@@ -26,5 +26,5 @@ func (t *task) UpdateTask(data domain.UpdateTaskModel, id uuid.UUID) (*resp.Task
 			&model.CreatedAt,
 			&model.UpdatedAt,
 		)
-	return &model, err
+	return model, err
 }

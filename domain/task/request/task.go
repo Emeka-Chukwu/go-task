@@ -5,6 +5,7 @@ import (
 	"go-task/domain/auths"
 	"time"
 
+	"github.com/google/uuid"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 )
 
@@ -14,6 +15,7 @@ type TaskModel struct {
 	// Status      string `json:"status"`
 	Priority string     `json:"priority"`
 	DueDate  *time.Time `json:"due_date"`
+	UserID   uuid.UUID  `json:"user_id"`
 }
 
 var (
