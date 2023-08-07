@@ -5,6 +5,7 @@
 package mockdb
 
 import (
+	context "context"
 	domain "go-task/domain/task/request"
 	domain0 "go-task/domain/task/response"
 	reflect "reflect"
@@ -37,10 +38,10 @@ func (m *MockTask) EXPECT() *MockTaskMockRecorder {
 }
 
 // CreateTask mocks base method.
-func (m *MockTask) CreateTask(arg0 domain.TaskModel) (*domain0.TaskResponse, error) {
+func (m *MockTask) CreateTask(arg0 domain.TaskModel) (domain0.TaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateTask", arg0)
-	ret0, _ := ret[0].(*domain0.TaskResponse)
+	ret0, _ := ret[0].(domain0.TaskResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -66,10 +67,10 @@ func (mr *MockTaskMockRecorder) DeleteTask(arg0 interface{}) *gomock.Call {
 }
 
 // FetchTask mocks base method.
-func (m *MockTask) FetchTask() (*[]domain0.TaskResponse, error) {
+func (m *MockTask) FetchTask() ([]domain0.TaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "FetchTask")
-	ret0, _ := ret[0].(*[]domain0.TaskResponse)
+	ret0, _ := ret[0].([]domain0.TaskResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,11 +81,26 @@ func (mr *MockTaskMockRecorder) FetchTask() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTask", reflect.TypeOf((*MockTask)(nil).FetchTask))
 }
 
+// FetchTaskByID mocks base method.
+func (m *MockTask) FetchTaskByID(arg0 context.Context, arg1 uuid.UUID) (domain0.TaskResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FetchTaskByID", arg0, arg1)
+	ret0, _ := ret[0].(domain0.TaskResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FetchTaskByID indicates an expected call of FetchTaskByID.
+func (mr *MockTaskMockRecorder) FetchTaskByID(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FetchTaskByID", reflect.TypeOf((*MockTask)(nil).FetchTaskByID), arg0, arg1)
+}
+
 // UpdateTask mocks base method.
-func (m *MockTask) UpdateTask(arg0 domain.UpdateTaskModel, arg1 uuid.UUID) (*domain0.TaskResponse, error) {
+func (m *MockTask) UpdateTask(arg0 domain.UpdateTaskModel, arg1 uuid.UUID) (domain0.TaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateTask", arg0, arg1)
-	ret0, _ := ret[0].(*domain0.TaskResponse)
+	ret0, _ := ret[0].(domain0.TaskResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

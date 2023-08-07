@@ -17,5 +17,6 @@ type RegisterResponse struct {
 
 type LoginResponse struct {
 	RegisterResponse
-	Token string `json:"token"`
+	Token     string    `json:"token"`
+	ExpiredAt time.Time `json:"expired_at"`
 }

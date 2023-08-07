@@ -37,10 +37,10 @@ func (m *MockLabel) EXPECT() *MockLabelMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockLabel) Create(arg0 domain.LabelModel) (*domain0.LabelResponse, error) {
+func (m *MockLabel) Create(arg0 domain.LabelModel) (domain0.LabelResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", arg0)
-	ret0, _ := ret[0].(*domain0.LabelResponse)
+	ret0, _ := ret[0].(domain0.LabelResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -80,10 +80,10 @@ func (mr *MockLabelMockRecorder) Delete(arg0 interface{}) *gomock.Call {
 }
 
 // GetByID mocks base method.
-func (m *MockLabel) GetByID(arg0 uuid.UUID) (*domain0.LabelResponse, error) {
+func (m *MockLabel) GetByID(arg0 uuid.UUID) (domain0.LabelResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0)
-	ret0, _ := ret[0].(*domain0.LabelResponse)
+	ret0, _ := ret[0].(domain0.LabelResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -95,10 +95,10 @@ func (mr *MockLabelMockRecorder) GetByID(arg0 interface{}) *gomock.Call {
 }
 
 // List mocks base method.
-func (m *MockLabel) List() (*[]domain0.LabelResponse, error) {
+func (m *MockLabel) List() ([]domain0.LabelResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List")
-	ret0, _ := ret[0].(*[]domain0.LabelResponse)
+	ret0, _ := ret[0].([]domain0.LabelResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -110,10 +110,10 @@ func (mr *MockLabelMockRecorder) List() *gomock.Call {
 }
 
 // ListByLabel mocks base method.
-func (m *MockLabel) ListByLabel() (*[]domain0.LabelTaskResponse, error) {
+func (m *MockLabel) ListByLabel() ([]domain0.LabelTaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListByLabel")
-	ret0, _ := ret[0].(*[]domain0.LabelTaskResponse)
+	ret0, _ := ret[0].([]domain0.LabelTaskResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -125,10 +125,10 @@ func (mr *MockLabelMockRecorder) ListByLabel() *gomock.Call {
 }
 
 // ListByLabelID mocks base method.
-func (m *MockLabel) ListByLabelID(arg0 uuid.UUID) (*domain0.LabelTaskResponse, error) {
+func (m *MockLabel) ListByLabelID(arg0 uuid.UUID) (domain0.LabelTaskResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListByLabelID", arg0)
-	ret0, _ := ret[0].(*domain0.LabelTaskResponse)
+	ret0, _ := ret[0].(domain0.LabelTaskResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -140,10 +140,10 @@ func (mr *MockLabelMockRecorder) ListByLabelID(arg0 interface{}) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockLabel) Update(arg0 uuid.UUID, arg1 domain.LabelModel) (*domain0.LabelResponse, error) {
+func (m *MockLabel) Update(arg0 uuid.UUID, arg1 domain.LabelModel) (domain0.LabelResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", arg0, arg1)
-	ret0, _ := ret[0].(*domain0.LabelResponse)
+	ret0, _ := ret[0].(domain0.LabelResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

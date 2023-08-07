@@ -11,8 +11,8 @@ import (
 )
 
 type Authusecase interface {
-	LoginUser(req domain.LoginModel) resp.LoginResponse
-	Register(data domain.RegisterModel) (resp.RegisterResponse, error)
+	LoginUser(req domain.LoginModel) (resp.LoginResponse, error)
+	Register(data domain.RegisterModel) (resp.LoginResponse, error)
 	GetUserByID(id uuid.UUID) (resp.RegisterResponse, error)
 	GetUserByEmail(email string) (resp.RegisterResponse, error)
 }

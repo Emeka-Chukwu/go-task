@@ -37,10 +37,10 @@ func (m *MockAuthentication) EXPECT() *MockAuthenticationMockRecorder {
 }
 
 // GetUserByEmail mocks base method.
-func (m *MockAuthentication) GetUserByEmail(arg0 string) (*domain0.RegisterResponse, error) {
+func (m *MockAuthentication) GetUserByEmail(arg0 string) (domain0.RegisterResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByEmail", arg0)
-	ret0, _ := ret[0].(*domain0.RegisterResponse)
+	ret0, _ := ret[0].(domain0.RegisterResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -52,10 +52,10 @@ func (mr *MockAuthenticationMockRecorder) GetUserByEmail(arg0 interface{}) *gomo
 }
 
 // GetUserByID mocks base method.
-func (m *MockAuthentication) GetUserByID(arg0 uuid.UUID) (*domain0.RegisterResponse, error) {
+func (m *MockAuthentication) GetUserByID(arg0 uuid.UUID) (domain0.RegisterResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetUserByID", arg0)
-	ret0, _ := ret[0].(*domain0.RegisterResponse)
+	ret0, _ := ret[0].(domain0.RegisterResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -66,26 +66,11 @@ func (mr *MockAuthenticationMockRecorder) GetUserByID(arg0 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetUserByID", reflect.TypeOf((*MockAuthentication)(nil).GetUserByID), arg0)
 }
 
-// Login mocks base method.
-func (m *MockAuthentication) Login(arg0 domain.LoginModel) (*domain0.LoginResponse, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Login", arg0)
-	ret0, _ := ret[0].(*domain0.LoginResponse)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Login indicates an expected call of Login.
-func (mr *MockAuthenticationMockRecorder) Login(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Login", reflect.TypeOf((*MockAuthentication)(nil).Login), arg0)
-}
-
 // Register mocks base method.
-func (m *MockAuthentication) Register(arg0 domain.RegisterModel) (*domain0.RegisterResponse, error) {
+func (m *MockAuthentication) Register(arg0 domain.RegisterModel) (domain0.RegisterResponse, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Register", arg0)
-	ret0, _ := ret[0].(*domain0.RegisterResponse)
+	ret0, _ := ret[0].(domain0.RegisterResponse)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }

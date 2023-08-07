@@ -8,10 +8,10 @@ import (
 
 // GetUserByEmail implements Authusecase.
 func (t *authusecase) GetUserByEmail(email string) (resp.RegisterResponse, error) {
-	panic("unimplemented")
+	return t.store.GetUserByEmail(email)
 }
 
 // GetUserByID implements Authusecase.
-func (*authusecase) GetUserByID(id uuid.UUID) (resp.RegisterResponse, error) {
-	panic("unimplemented")
+func (t *authusecase) GetUserByID(id uuid.UUID) (resp.RegisterResponse, error) {
+	return t.store.GetUserByID(id)
 }
