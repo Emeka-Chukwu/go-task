@@ -1,9 +1,9 @@
 package auths
 
 import (
+	"database/sql"
 	"fmt"
 	mockdbrep "go-task/internal/auths/repository/mock"
-	mockdb "go-task/internal/auths/usecase/mock"
 	"go-task/util"
 	"reflect"
 	"testing"
@@ -12,6 +12,7 @@ import (
 	resp "go-task/domain/auths/response"
 
 	"github.com/golang/mock/gomock"
+	"github.com/lib/pq"
 	"github.com/stretchr/testify/require"
 )
 
@@ -47,23 +48,49 @@ func TestCreateUserusercase(t *testing.T) {
 	testCases := []struct {
 		body          req.RegisterModel
 		name          string
-		buildStubs    func(storeusecase *mockdb.MockAuthusecase, storeRep *mockdbrep.MockAuthentication)
+		buildStubs    func(store *mockdbrep.MockAuthentication)
 		checkResponse func(response resp.LoginResponse, err error)
 	}{
 		{
 			name: "Ok",
-			buildStubs: func(storeuse *mockdb.MockAuthusecase, storerep *mockdbrep.MockAuthentication) {
+			buildStubs: func(store *mockdbrep.MockAuthentication) {
 				arg := req.RegisterModel{
 					Username: loginResp.Username,
 					Email:    loginResp.Email,
 				}
-				storeuse.EXPECT().
+				store.EXPECT().
 					Register(EqRegisterModel(arg, password)).
 					Times(1).
-					Return(loginResp, nil)
+					Return(loginResp.RegisterResponse, nil)
 			},
 			checkResponse: func(response resp.LoginResponse, err error) {
 				require.NoError(t, err)
+			},
+		},
+		{
+			name: "InternalServerError",
+			buildStubs: func(store *mockdbrep.MockAuthentication) {
+
+				store.EXPECT().
+					Register(gomock.Any()).
+					Times(1).
+					Return(resp.RegisterResponse{}, sql.ErrConnDone)
+			},
+			checkResponse: func(response resp.LoginResponse, err error) {
+				require.Error(t, err)
+			},
+		},
+		{
+			name: "DuplicatedRecord",
+			buildStubs: func(store *mockdbrep.MockAuthentication) {
+
+				store.EXPECT().
+					Register(gomock.Any()).
+					Times(1).
+					Return(resp.RegisterResponse{}, &pq.Error{Code: "23505"})
+			},
+			checkResponse: func(response resp.LoginResponse, err error) {
+				require.Error(t, err)
 			},
 		},
 	}
@@ -72,14 +99,16 @@ func TestCreateUserusercase(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
-			storeRep := mockdbrep.NewMockAuthentication(ctrl)
-			store := mockdb.NewMockAuthusecase(ctrl)
-			tc.buildStubs(store, storeRep)
-			loginResp, err := store.Register(req.RegisterModel{
+			store := mockdbrep.NewMockAuthentication(ctrl)
+			tc.buildStubs(store)
+			regResp, err := store.Register(req.RegisterModel{
 				Username:     loginResp.Username,
 				Email:        loginResp.Email,
 				PasswordHash: loginResp.PasswordHash,
 			})
+			loginResp = resp.LoginResponse{
+				RegisterResponse: regResp,
+			}
 			tc.checkResponse(loginResp, err)
 		})
 	}
