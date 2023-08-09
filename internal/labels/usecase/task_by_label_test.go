@@ -2,48 +2,53 @@ package label
 
 import (
 	"database/sql"
+	mockdb "go-task/internal/labels/repository/mock"
+
+	"testing"
+
 	req "go-task/domain/label/request"
 	resp "go-task/domain/label/response"
-	mockdb "go-task/internal/labels/repository/mock"
-	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 )
 
-func TestGetLabelTasksByID(t *testing.T) {
-	labelResp := randomLabel(t)
-
+func TestGetLabelListByLabelusecase(t *testing.T) {
+	n := 5
+	ltResps := make([]resp.LabelTaskResponse, n)
+	for i := 0; i < n; i++ {
+		ltResps[i] = createRandomLabelTask(t)
+	}
+	type listTaskResponse []resp.LabelTaskResponse
 	testCases := []struct {
 		body          req.LabelModel
 		name          string
 		buildStubs    func(store *mockdb.MockLabel)
-		checkResponse func(response resp.LabelResponse, err error)
+		checkResponse func(response listTaskResponse, err error)
 	}{
 		{
 			name: "Ok",
 			buildStubs: func(store *mockdb.MockLabel) {
 				store.EXPECT().
-					GetByID(gomock.Eq(labelResp.ID)).
+					ListByLabel().
 					Times(1).
-					Return(labelResp, nil)
+					Return(ltResps, nil)
 			},
-			checkResponse: func(response resp.LabelResponse, err error) {
+			checkResponse: func(response listTaskResponse, err error) {
 				require.NoError(t, err)
 				require.NotEmpty(t, response)
 			},
 		},
-
 		{
 			name: "InternalServerError",
 			buildStubs: func(store *mockdb.MockLabel) {
 
 				store.EXPECT().
-					GetByID(gomock.Any()).
+					ListByLabel().
 					Times(1).
-					Return(resp.LabelResponse{}, sql.ErrConnDone)
+					Return(ltResps, sql.ErrConnDone)
 			},
-			checkResponse: func(response resp.LabelResponse, err error) {
+			checkResponse: func(response listTaskResponse, err error) {
 				require.Error(t, err)
 			},
 		},
@@ -56,7 +61,7 @@ func TestGetLabelTasksByID(t *testing.T) {
 			store := mockdb.NewMockLabel(ctrl)
 			tc.buildStubs(store)
 			authUsecase := newTestUsecase(t, store)
-			loginResp, err := authUsecase.GetByID(labelResp.ID)
+			loginResp, err := authUsecase.ListByLabel()
 			tc.checkResponse(loginResp, err)
 		})
 	}
