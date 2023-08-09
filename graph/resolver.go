@@ -4,4 +4,14 @@ package graph
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-type Resolver struct{}
+import (
+	useAuth "go-task/internal/auths/usecase"
+	useLabel "go-task/internal/labels/usecase"
+	useTask "go-task/internal/tasks/usecase"
+)
+
+type Resolver struct {
+	Auth  useAuth.Authusecase
+	Label useLabel.Labelusecase
+	Task  useTask.Taskusecase
+}
