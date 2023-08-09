@@ -26,3 +26,9 @@ type authusecase struct {
 func NewAuthusecase(store repo.Authentication, config util.Config, tokenMaker token.Maker) Authusecase {
 	return &authusecase{store: store, config: config, tokenMaker: tokenMaker}
 }
+
+type ResponseData struct {
+	Message string `json:"message"`
+	Data    any    `json:"data,omitempty"`
+	Error   any    `json:"error,omitempty"`
+}
