@@ -1,0 +1,49 @@
+
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+ 
+type Label {
+  id: ID!
+  name: String!
+  created_at: timestamp!
+  updated_at: timestamp!
+}
+
+extend type Query {
+  getLabelById(id:String!): Label!
+  ListLabel:[Label]!
+  ListLabelTask: [LabelTaskResponse!]
+  getLabelTasksById(id:String!): LabelTaskResponse!
+}
+
+type LabelTaskResponse {
+    label: Label!
+    task: [Task!]
+}
+
+input NewLabel{
+  name: String!
+}
+
+input NewLabelTask{
+  labelID: ID
+  taskID: ID
+}
+
+input UpdateLabel{
+  name: String!
+  id:ID!
+}
+
+type LabelResponse{
+  Data: Label!
+  Message: String!
+}
+
+extend type Mutation {
+  createLabel(input: NewLabel!): LabelResponse!
+  createLabelTask(input: NewLabelTask!): String!
+  updateLabel(input: UpdateLabel!): LabelResponse
+  deleteLabel(id: String!): String!
+}

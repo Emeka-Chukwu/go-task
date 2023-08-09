@@ -1,0 +1,49 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+ 
+type Task {
+  id: ID!
+  title: String!
+  description: String!
+  status: String!
+  priority: String!
+  due_date: timestamp
+  user_id: String!
+  created_at: timestamp!
+  updated_at: timestamp!
+
+}
+
+extend type Query {
+  getTaskById(id:String!): Task!
+  ListTask:[Task]!
+  
+  
+}
+
+input NewTask{
+  title: String!
+  description: String!
+  priority: String!
+  due_date: timestamp
+}
+
+input UpdateTask{
+  title: String!
+  description: String!
+  priority: String!
+  due_date: timestamp
+  id:ID!
+}
+
+type TaskResponse{
+  Data: Task!
+  Message: String!
+}
+
+extend type Mutation {
+  createTask(input: NewTask!): TaskResponse!
+  updateTask(input: UpdateTask!): TaskResponse
+  deleteTask(id: String!): String!
+}

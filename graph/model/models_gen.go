@@ -2,19 +2,91 @@
 
 package model
 
-type NewTodo struct {
-	Text   string `json:"text"`
-	UserID string `json:"userId"`
+type Label struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
-type Todo struct {
+type LabelResponse struct {
+	Data    *Label `json:"Data"`
+	Message string `json:"Message"`
+}
+
+type LabelTaskResponse struct {
+	Label *Label  `json:"label"`
+	Task  []*Task `json:"task,omitempty"`
+}
+
+type LoginResponse struct {
+	User      *User   `json:"user"`
+	Token     string  `json:"token"`
+	ExpiredAt *string `json:"expired_at,omitempty"`
+}
+
+type LoginUser struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type NewLabel struct {
+	Name string `json:"name"`
+}
+
+type NewLabelTask struct {
+	LabelID *string `json:"labelID,omitempty"`
+	TaskID  *string `json:"taskID,omitempty"`
+}
+
+type NewTask struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Priority    string  `json:"priority"`
+	DueDate     *string `json:"due_date,omitempty"`
+}
+
+type NewUser struct {
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	PasswordHash string `json:"passwordHash"`
+}
+
+type Task struct {
+	ID          string  `json:"id"`
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Status      string  `json:"status"`
+	Priority    string  `json:"priority"`
+	DueDate     *string `json:"due_date,omitempty"`
+	UserID      string  `json:"user_id"`
+	CreatedAt   string  `json:"created_at"`
+	UpdatedAt   string  `json:"updated_at"`
+}
+
+type TaskResponse struct {
+	Data    *Task  `json:"Data"`
+	Message string `json:"Message"`
+}
+
+type UpdateLabel struct {
+	Name string `json:"name"`
 	ID   string `json:"id"`
-	Text string `json:"text"`
-	Done bool   `json:"done"`
-	User *User  `json:"user"`
+}
+
+type UpdateTask struct {
+	Title       string  `json:"title"`
+	Description string  `json:"description"`
+	Priority    string  `json:"priority"`
+	DueDate     *string `json:"due_date,omitempty"`
+	ID          string  `json:"id"`
 }
 
 type User struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID           string `json:"id"`
+	Username     string `json:"username"`
+	Email        string `json:"email"`
+	PasswordHash string `json:"passwordHash"`
+	CreatedAt    string `json:"created_at"`
+	UpdatedAt    string `json:"updated_at"`
 }
