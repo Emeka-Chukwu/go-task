@@ -19,7 +19,7 @@ func (t *taskusecase) UpdateTask(data domain.UpdateTaskModel, id uuid.UUID) (Res
 		if err == sql.ErrNoRows {
 			return ResponseData{Message: "Record not found"}, err
 		}
-		return ResponseData{Message: "Internal server error", Error: errdetails}, errors.New("Internal server error")
+		return ResponseData{Message: "Internal server error", Error: err}, err
 	}
-	return ResponseData{Message: "Record updated successfully", Data: updatedTask}, errors.New("validation err")
+	return ResponseData{Message: "Record updated successfully", Data: updatedTask}, err
 }
