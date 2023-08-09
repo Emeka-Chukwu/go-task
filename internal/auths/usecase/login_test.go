@@ -57,10 +57,8 @@ func TestLoginUserusercase(t *testing.T) {
 			defer ctrl.Finish()
 			store := mockdbrep.NewMockAuthentication(ctrl)
 			tc.buildStubs(store)
-			regResp, err := store.GetUserByEmail(loginResp.Email)
-			loginResp = resp.LoginResponse{
-				RegisterResponse: regResp,
-			}
+			authUsecase := newTestUsecase(t, store)
+			loginResp, err := authUsecase.LoginUser(req.LoginModel{Email: loginResp.Email, Password: password})
 			tc.checkResponse(loginResp, err)
 		})
 	}

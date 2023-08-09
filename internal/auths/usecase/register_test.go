@@ -101,14 +101,13 @@ func TestCreateUserusercase(t *testing.T) {
 			defer ctrl.Finish()
 			store := mockdbrep.NewMockAuthentication(ctrl)
 			tc.buildStubs(store)
-			regResp, err := store.Register(req.RegisterModel{
+			authUsecase := newTestUsecase(t, store)
+			loginResp, err := authUsecase.Register(req.RegisterModel{
 				Username:     loginResp.Username,
 				Email:        loginResp.Email,
-				PasswordHash: loginResp.PasswordHash,
+				PasswordHash: password,
 			})
-			loginResp = resp.LoginResponse{
-				RegisterResponse: regResp,
-			}
+
 			tc.checkResponse(loginResp, err)
 		})
 	}
@@ -124,6 +123,20 @@ func randomUser(t *testing.T) (user resp.LoginResponse, password string) {
 			Email:        util.RandomEmail(),
 			PasswordHash: hashedPassword,
 		},
+	}
+	return
+}
+
+func randomUserId(t *testing.T) (user resp.RegisterResponse) {
+	password := util.RandomString(8)
+	hashedPassword, err := util.HashPassword(password)
+	require.NoError(t, err)
+	userID := util.Getuuid()
+	user = resp.RegisterResponse{
+		Username:     util.RandomUsername(),
+		Email:        util.RandomEmail(),
+		PasswordHash: hashedPassword,
+		ID:           userID,
 	}
 	return
 }
