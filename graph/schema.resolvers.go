@@ -6,23 +6,51 @@ package graph
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	domain "go-task/domain/auths/request"
 	"go-task/graph/model"
+
+	"github.com/google/uuid"
 )
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.LoginResponse, error) {
+	userModel := domain.RegisterModel{
+		Username:     input.Username,
+		Email:        input.Email,
+		PasswordHash: input.PasswordHash,
+	}
+	errdetails := userModel.ValidateRegister()
+	if errdetails != nil {
+		return &model.LoginResponse{}, errors.New(fmt.Sprintf("%v", errdetails))
+	}
+	respData, err := r.Auth.Register(userModel)
+	return responseUser(respData), err
 }
 
 // LoginUser is the resolver for the loginUser field.
 func (r *mutationResolver) LoginUser(ctx context.Context, input model.LoginUser) (*model.LoginResponse, error) {
-	panic(fmt.Errorf("not implemented: LoginUser - loginUser"))
+	userModel := domain.LoginModel{
+		Email:    input.Email,
+		Password: input.Password,
+	}
+	errdetails := userModel.ValidateLogin()
+	if errdetails != nil {
+		return &model.LoginResponse{}, errors.New(fmt.Sprintf("%v", errdetails))
+	}
+	respData, err := r.Auth.LoginUser(userModel)
+	return responseUser(respData), err
 }
 
 // GetUserByID is the resolver for the getUserById field.
 func (r *queryResolver) GetUserByID(ctx context.Context, id string) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: GetUserByID - getUserById"))
+	Id, err := uuid.Parse(id)
+	if err != nil {
+		return &model.User{}, err
+	}
+	respData, err := r.Auth.GetUserByID(Id)
+	return responseUserData(respData), err
 }
 
 // Mutation returns MutationResolver implementation.

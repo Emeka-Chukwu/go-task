@@ -12,7 +12,6 @@ import (
 
 // CreateLabel is the resolver for the createLabel field.
 func (r *mutationResolver) CreateLabel(ctx context.Context, input model.NewLabel) (*model.LabelResponse, error) {
-
 	panic(fmt.Errorf("not implemented: CreateLabel - createLabel"))
 }
 

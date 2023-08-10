@@ -31,10 +31,10 @@ input LoginUser{
 type LoginResponse{
   user: User!
   token: String!
-  expired_at: timestamp
+  expired_at: timestamp!
 }
 
 type Mutation {
-  createUser(input: NewUser!): User!
-  loginUser(input: LoginUser!): LoginResponse
+  createUser(input: NewUser!): LoginResponse!
+  loginUser(input: LoginUser!): LoginResponse!
 }

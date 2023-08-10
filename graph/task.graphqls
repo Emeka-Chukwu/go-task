@@ -1,7 +1,7 @@
 # GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
- 
+directive @auth on FIELD_DEFINITION
 type Task {
   id: ID!
   title: String!
@@ -16,8 +16,8 @@ type Task {
 }
 
 extend type Query {
-  getTaskById(id:String!): Task!
-  ListTask:[Task]!
+  getTaskById(id:String!): Task! @auth
+  ListTask:[Task]!@auth
   
   
 }
@@ -43,7 +43,7 @@ type TaskResponse{
 }
 
 extend type Mutation {
-  createTask(input: NewTask!): TaskResponse!
-  updateTask(input: UpdateTask!): TaskResponse
-  deleteTask(id: String!): String!
+  createTask(input: NewTask!): TaskResponse! @auth
+  updateTask(input: UpdateTask!): TaskResponse @auth
+  deleteTask(id: String!): String! @auth
 }

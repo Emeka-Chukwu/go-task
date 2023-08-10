@@ -20,9 +20,9 @@ type LabelTaskResponse struct {
 }
 
 type LoginResponse struct {
-	User      *User   `json:"user"`
-	Token     string  `json:"token"`
-	ExpiredAt *string `json:"expired_at,omitempty"`
+	User      *User  `json:"user"`
+	Token     string `json:"token"`
+	ExpiredAt string `json:"expired_at"`
 }
 
 type LoginUser struct {

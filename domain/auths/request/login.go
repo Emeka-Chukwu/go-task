@@ -12,8 +12,8 @@ type LoginModel struct {
 	Password string `json:"password"`
 }
 
-func (req *RegisterModel) ValidateLogin() (violations []*errdetails.BadRequest_FieldViolation) {
-	if err := auths.ValidatePassword(req.PasswordHash); err != nil {
+func (req *LoginModel) ValidateLogin() (violations []*errdetails.BadRequest_FieldViolation) {
+	if err := auths.ValidatePassword(req.Password); err != nil {
 		violations = append(violations, field.FieldViolation("password", err))
 	}
 	if err := auths.ValidateEmail(req.Email); err != nil {

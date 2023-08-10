@@ -33,15 +33,6 @@ func main() {
 	if port == "" {
 		port = defaultPort
 	}
-	r := gin.Default()
-	r.POST("/query", graphqlHandler())
-	r.GET("/", playgroundHandler())
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	r.Run()
-}
-
-// Defining the Graphql handler
-func graphqlHandler() gin.HandlerFunc {
 	config, err := util.LoadConfig(".")
 	if err != nil {
 		log.Fatalf("Cannot set config: %v", err.Error())
@@ -50,15 +41,24 @@ func graphqlHandler() gin.HandlerFunc {
 	if err != nil {
 		log.Fatal(err)
 	}
+	r := gin.Default()
+	// r.Use(middlewares.AuthMiddleware(tokenMaker, config))
+	r.POST("/query", graphqlHandler(config, tokenMaker))
+	r.GET("/", playgroundHandler())
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	r.Run()
+}
+
+// Defining the Graphql handler
+func graphqlHandler(config util.Config, tokenMaker token.Maker) gin.HandlerFunc {
+
 	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatalf("Cannot connect to db:")
 	}
-
 	authRepo := repoAuth.NewAuthentication(conn)
 	labelRepo := repoLabel.NewLabel(conn)
 	taskLabel := repoTask.NewStore(conn)
-
 	auths := useAuth.NewAuthusecase(authRepo, config, tokenMaker)
 	label := useLabel.NewLabelusecase(labelRepo, config, tokenMaker)
 	task := useTask.NewTaskusecase(taskLabel, config, tokenMaker)
@@ -74,8 +74,13 @@ func graphqlHandler() gin.HandlerFunc {
 
 // Defining the Playground handler
 func playgroundHandler() gin.HandlerFunc {
-	h := playground.Handler("GraphQL", "/query")
+	h := playground.Handler("GraphQL playground", "/query")
 	return func(c *gin.Context) {
 		h.ServeHTTP(c.Writer, c.Request)
 	}
 }
+
+// db := store.NewStore()
+// 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+// 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+// 	http.Handle("/query", store.WithStore(db, srv))
