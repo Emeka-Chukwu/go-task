@@ -19,7 +19,6 @@ extend type Query {
   getTaskById(id:String!): Task! @auth
   ListTask:[Task]!@auth
   
-  
 }
 
 input NewTask{
