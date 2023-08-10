@@ -3,10 +3,10 @@ package main
 import (
 	"database/sql"
 	"go-task/graph"
+	"go-task/pkg/generated"
 	"go-task/token"
 	"go-task/util"
 	"log"
-	"net/http"
 	"os"
 
 	repoAuth "go-task/internal/auths/repository/postgres"
@@ -15,6 +15,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/gin-gonic/gin"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/lib/pq"
@@ -27,13 +28,23 @@ import (
 const defaultPort = "8080"
 
 func main() {
-	config, err := util.LoadConfig(".")
-	if err != nil {
-		log.Fatalf("Cannot set config: %v", err.Error())
-	}
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = defaultPort
+	}
+	r := gin.Default()
+	r.POST("/query", graphqlHandler())
+	r.GET("/", playgroundHandler())
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	r.Run()
+}
+
+// Defining the Graphql handler
+func graphqlHandler() gin.HandlerFunc {
+	config, err := util.LoadConfig(".")
+	if err != nil {
+		log.Fatalf("Cannot set config: %v", err.Error())
 	}
 	tokenMaker, err := token.NewJWTMaker(config.TokenSymmetricKey)
 	if err != nil {
@@ -51,15 +62,20 @@ func main() {
 	auths := useAuth.NewAuthusecase(authRepo, config, tokenMaker)
 	label := useLabel.NewLabelusecase(labelRepo, config, tokenMaker)
 	task := useTask.NewTaskusecase(taskLabel, config, tokenMaker)
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
+	h := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
 		Auth:  auths,
 		Label: label,
 		Task:  task,
 	}}))
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
+}
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
-
-	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+// Defining the Playground handler
+func playgroundHandler() gin.HandlerFunc {
+	h := playground.Handler("GraphQL", "/query")
+	return func(c *gin.Context) {
+		h.ServeHTTP(c.Writer, c.Request)
+	}
 }
