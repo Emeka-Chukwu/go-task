@@ -70,3 +70,8 @@ func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handle
 	})
 
 }
+
+func GetCurrentUserID(ctx context.Context) (*token.Payload, bool) {
+	payload, ok := ctx.Value(authorizationPayloadKey).(*token.Payload)
+	return payload, ok
+}

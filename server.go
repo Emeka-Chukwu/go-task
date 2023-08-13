@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"go-task/directives"
 	"go-task/graph"
 	repoAuth "go-task/internal/auths/repository/postgres"
 	repoLabel "go-task/internal/labels/repository/postgres"
@@ -48,13 +49,13 @@ func main() {
 	auths := useAuth.NewAuthusecase(authRepo, config, tokenMaker)
 	label := useLabel.NewLabelusecase(labelRepo, config, tokenMaker)
 	task := useTask.NewTaskusecase(taskLabel, config, tokenMaker)
-
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{
+	c := graph.Config{Resolvers: &graph.Resolver{
 		Auth:  auths,
 		Label: label,
 		Task:  task,
-	}}))
-
+	}}
+	c.Directives.Auth = directives.Auth
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(c))
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", middlewares.AuthMiddleware(tokenMaker, config, srv))
 

@@ -13,7 +13,7 @@ type User {
 }
 
 type Query {
-  getUserById(id:String!): User! @auth
+  getUserById(id:String!): User!  @auth
    
 }
 input NewUser{
