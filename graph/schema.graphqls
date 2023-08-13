@@ -1,6 +1,6 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @auth on FIELD_DEFINITION
  scalar timestamp
 type User {
   id: ID!
@@ -13,10 +13,9 @@ type User {
 }
 
 type Query {
-  getUserById(id:String!): User!
-  
+  getUserById(id:String!): User!  @auth
+   
 }
-
 input NewUser{
   username: String!
   email: String!
@@ -31,10 +30,10 @@ input LoginUser{
 type LoginResponse{
   user: User!
   token: String!
-  expired_at: timestamp
+  expired_at: timestamp!
 }
 
 type Mutation {
-  createUser(input: NewUser!): User!
-  loginUser(input: LoginUser!): LoginResponse
+  createUser(input: NewUser!): LoginResponse!
+  loginUser(input: LoginUser!): LoginResponse!
 }

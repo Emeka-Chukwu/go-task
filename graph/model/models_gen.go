@@ -9,6 +9,11 @@ type Label struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+type LabelListResponse struct {
+	Data    []*Label `json:"Data"`
+	Message string   `json:"Message"`
+}
+
 type LabelResponse struct {
 	Data    *Label `json:"Data"`
 	Message string `json:"Message"`
@@ -16,13 +21,13 @@ type LabelResponse struct {
 
 type LabelTaskResponse struct {
 	Label *Label  `json:"label"`
-	Task  []*Task `json:"task,omitempty"`
+	Task  any `json:"task,omitempty"`
 }
 
 type LoginResponse struct {
-	User      *User   `json:"user"`
-	Token     string  `json:"token"`
-	ExpiredAt *string `json:"expired_at,omitempty"`
+	User      *User  `json:"user"`
+	Token     string `json:"token"`
+	ExpiredAt string `json:"expired_at"`
 }
 
 type LoginUser struct {
@@ -64,6 +69,11 @@ type Task struct {
 	UpdatedAt   string  `json:"updated_at"`
 }
 
+type TaskListResponse struct {
+	Data    []*Task `json:"Data,omitempty"`
+	Message string  `json:"Message"`
+}
+
 type TaskResponse struct {
 	Data    *Task  `json:"Data"`
 	Message string `json:"Message"`
@@ -80,6 +90,7 @@ type UpdateTask struct {
 	Priority    string  `json:"priority"`
 	DueDate     *string `json:"due_date,omitempty"`
 	ID          string  `json:"id"`
+	Status      string  `json:"status"`
 }
 
 type User struct {
