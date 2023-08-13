@@ -16,8 +16,8 @@ type Task {
 }
 
 extend type Query {
-  getTaskById(id:String!): Task! @auth
-  ListTask:[Task]!@auth
+  getTaskById(id:String!): TaskResponse! @auth
+  ListTask:TaskListResponse!@auth
   
 }
 
@@ -26,6 +26,7 @@ input NewTask{
   description: String!
   priority: String!
   due_date: timestamp
+ 
 }
 
 input UpdateTask{
@@ -34,10 +35,15 @@ input UpdateTask{
   priority: String!
   due_date: timestamp
   id:ID!
+   status: String!
 }
 
 type TaskResponse{
   Data: Task!
+  Message: String!
+}
+type TaskListResponse{
+  Data: [Task!]
   Message: String!
 }
 

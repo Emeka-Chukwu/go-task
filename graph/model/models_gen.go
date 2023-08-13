@@ -64,6 +64,11 @@ type Task struct {
 	UpdatedAt   string  `json:"updated_at"`
 }
 
+type TaskListResponse struct {
+	Data    []*Task `json:"Data,omitempty"`
+	Message string  `json:"Message"`
+}
+
 type TaskResponse struct {
 	Data    *Task  `json:"Data"`
 	Message string `json:"Message"`
@@ -80,6 +85,7 @@ type UpdateTask struct {
 	Priority    string  `json:"priority"`
 	DueDate     *string `json:"due_date,omitempty"`
 	ID          string  `json:"id"`
+	Status      string  `json:"status"`
 }
 
 type User struct {
