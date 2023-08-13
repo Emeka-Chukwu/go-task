@@ -1,6 +1,6 @@
-# GraphQL schema example
-#
-# https://gqlgen.com/getting-started/
+directive @goField(forceResolver: Boolean, name: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+directive @auth on FIELD_DEFINITION
  scalar timestamp
 type User {
   id: ID!

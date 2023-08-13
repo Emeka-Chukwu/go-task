@@ -1,7 +1,7 @@
 # GraphQL schema example
 #
 # https://gqlgen.com/getting-started/
-directive @auth on FIELD_DEFINITION
+
 type Task {
   id: ID!
   title: String!

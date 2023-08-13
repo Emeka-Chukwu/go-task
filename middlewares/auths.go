@@ -1,6 +1,8 @@
 package middlewares
 
 import (
+	"context"
+	"encoding/json"
 	"errors"
 	"go-task/token"
 	"go-task/util"
@@ -9,8 +11,6 @@ import (
 	"net/http"
 
 	"strings"
-
-	"github.com/gin-gonic/gin"
 )
 
 const (
@@ -19,43 +19,54 @@ const (
 	authorizationPayloadKey = "authorization_payload"
 )
 
-func AuthMiddleware(tokenMaker token.Maker, config util.Config) gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
+func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		authorizationHeader := r.Header.Get(authorizationHeaderKey)
 		if authorizationHeader == "" {
-			ctx.Next()
+			next.ServeHTTP(w, r)
+			return
 		}
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is not provided")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
 			return
 		}
 		fields := strings.Fields(authorizationHeader)
 		if len(fields) < 2 {
 			err := errors.New("invalid authorization header format")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
 			return
 		}
-
 		authorizationType := strings.ToLower(fields[0])
 		if authorizationType != authorizationTypeBearer {
 			err := fmt.Errorf("unsupported authorization type %s", authorizationType)
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
 			return
 		}
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifiyToken(accessToken)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
 			return
 		}
 		tokenDiff := payload.ExpiredAt.Sub(payload.IssuedAt).Minutes() + 0.005
 		if (tokenDiff - config.AccessTokenDuration.Minutes()) > 1 {
 			err := errors.New("invalid token")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(err)
 			return
 		}
-		ctx.Set(authorizationPayloadKey, payload)
-		ctx.Next()
-	}
+		reqWithStore := r.WithContext(context.WithValue(r.Context(), authorizationPayloadKey, payload))
+		next.ServeHTTP(w, reqWithStore)
+	})
+
 }
