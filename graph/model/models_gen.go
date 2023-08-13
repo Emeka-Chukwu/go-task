@@ -9,6 +9,11 @@ type Label struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
+type LabelListResponse struct {
+	Data    []*Label `json:"Data"`
+	Message string   `json:"Message"`
+}
+
 type LabelResponse struct {
 	Data    *Label `json:"Data"`
 	Message string `json:"Message"`
@@ -16,7 +21,7 @@ type LabelResponse struct {
 
 type LabelTaskResponse struct {
 	Label *Label  `json:"label"`
-	Task  []*Task `json:"task,omitempty"`
+	Task  any `json:"task,omitempty"`
 }
 
 type LoginResponse struct {

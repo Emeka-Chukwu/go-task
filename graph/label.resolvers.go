@@ -7,42 +7,71 @@ package graph
 import (
 	"context"
 	"fmt"
+	domain "go-task/domain/label/request"
 	"go-task/graph/model"
+
+	"github.com/google/uuid"
 )
 
 // CreateLabel is the resolver for the createLabel field.
 func (r *mutationResolver) CreateLabel(ctx context.Context, input model.NewLabel) (*model.LabelResponse, error) {
-	panic(fmt.Errorf("not implemented: CreateLabel - createLabel"))
+	req := domain.LabelModel{
+		Name: input.Name,
+	}
+	labelResp, err := r.Label.Create(req)
+	return responseLabelData(labelResp), err
 }
 
 // CreateLabelTask is the resolver for the createLabelTask field.
 func (r *mutationResolver) CreateLabelTask(ctx context.Context, input model.NewLabelTask) (string, error) {
-	panic(fmt.Errorf("not implemented: CreateLabelTask - createLabelTask"))
+	labelID := uuid.MustParse(*input.LabelID)
+	taskID := uuid.MustParse(*input.TaskID)
+	req := domain.LabelTaskModel{
+		LabelID: labelID,
+		TaskID:  taskID,
+	}
+	err := r.Label.CreateTaskLabel(req)
+	return "Linked successfully", err
 }
 
 // UpdateLabel is the resolver for the updateLabel field.
 func (r *mutationResolver) UpdateLabel(ctx context.Context, input model.UpdateLabel) (*model.LabelResponse, error) {
-	panic(fmt.Errorf("not implemented: UpdateLabel - updateLabel"))
+	req := domain.LabelModel{
+		Name: input.Name,
+	}
+	labelID := uuid.MustParse(input.ID)
+	labelResp, err := r.Label.Update(labelID, req)
+	return responseLabelData(labelResp), err
 }
 
 // DeleteLabel is the resolver for the deleteLabel field.
 func (r *mutationResolver) DeleteLabel(ctx context.Context, id string) (string, error) {
-	panic(fmt.Errorf("not implemented: DeleteLabel - deleteLabel"))
+	labelID := uuid.MustParse(id)
+	err := r.Label.Delete(labelID)
+	if err != nil {
+		return "error deleting record", err
+	}
+	return "Record deleted successfully", nil
 }
 
 // GetLabelByID is the resolver for the getLabelById field.
-func (r *queryResolver) GetLabelByID(ctx context.Context, id string) (*model.Label, error) {
-	panic(fmt.Errorf("not implemented: GetLabelByID - getLabelById"))
+func (r *queryResolver) GetLabelByID(ctx context.Context, id string) (*model.LabelResponse, error) {
+	labelID := uuid.MustParse(id)
+	data, err := r.Label.GetByID(labelID)
+	return responseLabelData(data), err
 }
 
 // ListLabel is the resolver for the ListLabel field.
-func (r *queryResolver) ListLabel(ctx context.Context) ([]*model.Label, error) {
-	panic(fmt.Errorf("not implemented: ListLabel - ListLabel"))
+func (r *queryResolver) ListLabel(ctx context.Context) (*model.LabelListResponse, error) {
+	data, err := r.Label.List()
+	return responseLabelListData(data), err
 }
 
 // ListLabelTask is the resolver for the ListLabelTask field.
 func (r *queryResolver) ListLabelTask(ctx context.Context) ([]*model.LabelTaskResponse, error) {
-	panic(fmt.Errorf("not implemented: ListLabelTask - ListLabelTask"))
+	// panic(fmt.Errorf("not implemented: ListLabelTask - ListLabelTask"))
+	data, err := r.Label.ListByLabel()
+	return responseLabelTask(data), err
 }
 
 // GetLabelTasksByID is the resolver for the getLabelTasksById field.

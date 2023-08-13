@@ -11,10 +11,10 @@ type Label {
 }
 
 extend type Query {
-  getLabelById(id:String!): Label!
-  ListLabel:[Label]!
-  ListLabelTask: [LabelTaskResponse!]
-  getLabelTasksById(id:String!): LabelTaskResponse!
+  getLabelById(id:String!): LabelResponse!  @auth
+  ListLabel:LabelListResponse!  @auth
+  ListLabelTask: [LabelTaskResponse!]  @auth
+  getLabelTasksById(id:String!): LabelTaskResponse!  @auth
 }
 
 type LabelTaskResponse {
@@ -40,10 +40,14 @@ type LabelResponse{
   Data: Label!
   Message: String!
 }
+type LabelListResponse{
+  Data: [Label]!
+  Message: String!
+}
 
 extend type Mutation {
-  createLabel(input: NewLabel!): LabelResponse!
-  createLabelTask(input: NewLabelTask!): String!
-  updateLabel(input: UpdateLabel!): LabelResponse
-  deleteLabel(id: String!): String!
+  createLabel(input: NewLabel!): LabelResponse!  @auth
+  createLabelTask(input: NewLabelTask!): String!  @auth
+  updateLabel(input: UpdateLabel!): LabelResponse  @auth
+  deleteLabel(id: String!): String!  @auth
 }
