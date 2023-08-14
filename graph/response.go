@@ -1,7 +1,6 @@
 package graph
 
 import (
-	"fmt"
 	resp "go-task/domain/auths/response"
 
 	respLabel "go-task/domain/label/response"
@@ -34,8 +33,7 @@ func responseUserData(user resp.RegisterResponse) *model.User {
 }
 
 func responseTaskData(task respTask.TaskResponse) *model.TaskResponse {
-	date := fmt.Sprintf("&v", task.DueDate)
-
+	date := task.DueDate.String()
 	return &model.TaskResponse{
 		Message: "Task fetched successfully",
 		Data: &model.Task{
@@ -54,7 +52,7 @@ func responseTaskData(task respTask.TaskResponse) *model.TaskResponse {
 func responseListTaskData(tasks []respTask.TaskResponse) *model.TaskListResponse {
 	tasksResp := make([]*model.Task, 0)
 	for _, task := range tasks {
-		date := fmt.Sprintf("&v", task.DueDate)
+		date := task.DueDate.String()
 		taskData := &model.Task{
 			ID:          task.ID.String(),
 			Title:       task.Title,

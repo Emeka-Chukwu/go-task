@@ -23,7 +23,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 	}
 	errdetails := userModel.ValidateRegister()
 	if errdetails != nil {
-		return &model.LoginResponse{}, errors.New(fmt.Sprintf("%v", errdetails))
+		return &model.LoginResponse{}, fmt.Errorf("%v", errdetails)
 	}
 	respData, err := r.Auth.Register(userModel)
 	return responseUser(respData), err
@@ -60,4 +60,5 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
 type mutationResolver struct{ *Resolver }
+
 type queryResolver struct{ *Resolver }

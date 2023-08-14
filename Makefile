@@ -52,7 +52,9 @@ mock:
 	mockgen -package mockdb -destination internal/auths/repository/mock/store.go go-task/internal/auths/repository/postgres Authentication
 	mockgen -package mockdb -destination internal/auths/usecase/mock/store.go go-task/internal/auths/usecase Authusecase 
 	mockgen -package mockdb -destination internal/labels/repository/mock/store.go go-task/internal/labels/repository/postgres Label
+	mockgen -package mockdb -destination internal/labels/usecase/mock/store.go go-task/internal/labels/usecase Labelusecase
 	mockgen -package mockdb -destination internal/tasks/repository/mock/store.go go-task/internal/tasks/repository/postgres Task
+	mockgen -package mockdb -destination internal/tasks/usecase/mock/store.go go-task/internal/tasks/usecase Taskusecase
 	# mockgen -package mockdb -destination db/mock/store.go blog-api/db/sqlc Store
 
 db_docs:
