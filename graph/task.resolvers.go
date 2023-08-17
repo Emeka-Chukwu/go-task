@@ -90,7 +90,7 @@ func (r *queryResolver) GetTaskByID(ctx context.Context, id string) (*model.Task
 	taskID := uuid.MustParse(id)
 	data, err := r.Task.FetchTaskByID(context.Background(), taskID)
 	if err != nil {
-		return &model.TaskResponse{}, fmt.Errorf("err : %v", err.Error)
+		return &model.TaskResponse{}, err
 	}
 	taskResp := data.Data.(resp.TaskResponse)
 	return responseTaskData(taskResp), err
