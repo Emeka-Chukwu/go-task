@@ -7,6 +7,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/golang/mock v1.6.0
 	github.com/google/uuid v1.3.0
+	github.com/graph-gophers/graphql-go v1.5.0
 	github.com/lib/pq v1.10.9
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.3

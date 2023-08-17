@@ -9,15 +9,8 @@ import (
 	"github.com/golang/mock/gomock"
 )
 
-func newTestUsecase(t *testing.T) TestGraphQlMethods {
-	// config := util.Config{
-	// 	TokenSymmetricKey:   util.RandomString(32),
-	// 	AccessTokenDuration: time.Minute,
-	// }
-	// tokenMaker, err := token.NewJWTMaker(config.TokenSymmetricKey)
-	// if err != nil {
-	// 	return nil
-	// }
+func newTestUsecase(t *testing.T) (Config, *mockdb.MockAuthusecase) {
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	ctrl2 := gomock.NewController(t)
@@ -27,6 +20,12 @@ func newTestUsecase(t *testing.T) TestGraphQlMethods {
 	auth := mockdb.NewMockAuthusecase(ctrl)
 	label := mockdbLabel.NewMockLabelusecase(ctrl2)
 	task := mockdbTask.NewMockTaskusecase(ctrl3)
-	usecase := NewTestGraphQlMethods(auth, label, task)
-	return usecase
+
+	c := Config{Resolvers: &Resolver{
+		Auth:  auth,
+		Label: label,
+		Task:  task,
+	}}
+	// c.Directives.Auth = directives.Auth
+	return c, auth
 }
