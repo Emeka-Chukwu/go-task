@@ -1,12 +1,22 @@
 package graph
 
 import (
+	"fmt"
 	mockdb "go-task/internal/auths/usecase/mock"
 	mockdbLabel "go-task/internal/labels/usecase/mock"
 	mockdbTask "go-task/internal/tasks/usecase/mock"
+	"go-task/token"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
+	"github.com/stretchr/testify/require"
+)
+
+const (
+	authorizationHeaderKey  = "authorization"
+	authorizationTypeBearer = "bearer"
+	// authorizationPayloadKey = "authorization_payload"
 )
 
 func newTestUsecase(t *testing.T) (Config, *mockdb.MockAuthusecase) {
@@ -29,3 +39,19 @@ func newTestUsecase(t *testing.T) (Config, *mockdb.MockAuthusecase) {
 	// c.Directives.Auth = directives.Auth
 	return c, auth
 }
+
+func addAuthorization(
+	t *testing.T,
+	tokenMaker token.Maker,
+	authorizationType string,
+	username string,
+	duration time.Duration,
+) string {
+	token, payload, err := tokenMaker.CreateToken(username, duration)
+	require.NoError(t, err)
+	require.NotEmpty(t, payload)
+	authorizationHeader := fmt.Sprintf("%s %s", authorizationType, token)
+	return authorizationHeader
+}
+
+// client.AddHeader("Authorization")
