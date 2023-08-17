@@ -26,11 +26,12 @@ func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handle
 			next.ServeHTTP(w, r)
 			return
 		}
+
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is not provided")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
 		fields := strings.Fields(authorizationHeader)
@@ -38,7 +39,7 @@ func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handle
 			err := errors.New("invalid authorization header format")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
 		authorizationType := strings.ToLower(fields[0])
@@ -46,7 +47,7 @@ func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handle
 			err := fmt.Errorf("unsupported authorization type %s", authorizationType)
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
 		accessToken := fields[1]
@@ -54,7 +55,7 @@ func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handle
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
 		tokenDiff := payload.ExpiredAt.Sub(payload.IssuedAt).Minutes() + 0.005
@@ -62,10 +63,11 @@ func AuthMiddleware(tokenMaker token.Maker, config util.Config, next http.Handle
 			err := errors.New("invalid token")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(err)
+			json.NewEncoder(w).Encode(err.Error())
 			return
 		}
 		reqWithStore := r.WithContext(context.WithValue(r.Context(), authorizationPayloadKey, payload))
+
 		next.ServeHTTP(w, reqWithStore)
 	})
 
