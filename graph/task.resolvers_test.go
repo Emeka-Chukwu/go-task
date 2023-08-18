@@ -846,6 +846,178 @@ func TestFetchTasks(t *testing.T) {
 	}
 }
 
+func TestDeleteTaskByID(t *testing.T) {
+	taskResp := createRandomTaskResop(t)
+	user := createRandomLoginResp(t)
+	respData := tasks.ResponseData{
+		Message: "Success",
+		Data:    taskResp,
+	}
+	testCases := []struct {
+		name          string
+		buildStubs    func(store *mockdb.MockTaskusecase)
+		checkResponse func(response string, err error)
+		request       string
+		setupAuth     func(t *testing.T, tokenMaker token.Maker) string
+	}{
+		{
+			name: "Ok",
+			buildStubs: func(store *mockdb.MockTaskusecase) {
+
+				store.
+					EXPECT().
+					DeleteTask(gomock.Eq(taskResp.ID)).
+					Times(1).
+					Return(respData)
+			},
+			checkResponse: func(response string, err error) {
+				require.NoError(t, err)
+				require.NotEmpty(t, response)
+			},
+			request: fmt.Sprintf(`
+					mutation {
+						deleteTask (
+						id: "%s"
+						) 
+					}
+			  `, taskResp.ID),
+			setupAuth: func(t *testing.T, tokenMaker token.Maker) string {
+				return addAuthorization(t, tokenMaker, authorizationTypeBearer, user.ID.String(), time.Minute)
+			},
+		},
+		{
+			name: "InValidData",
+
+			buildStubs: func(store *mockdb.MockTaskusecase) {
+
+				store.
+					EXPECT().
+					DeleteTask(gomock.Any()).
+					Times(0)
+
+			},
+			checkResponse: func(response string, err error) {
+				require.Error(t, err)
+			},
+			request: fmt.Sprintf(`
+			mutation {
+				deleteTask (
+				id: "%s"
+				) 
+			}
+	  `, "983090389"),
+			setupAuth: func(t *testing.T, tokenMaker token.Maker) string {
+				return addAuthorization(t, tokenMaker, authorizationTypeBearer, user.ID.String(), time.Minute)
+			},
+		},
+		{
+			name: "RecordNotFound",
+
+			buildStubs: func(store *mockdb.MockTaskusecase) {
+
+				store.
+					EXPECT().
+					DeleteTask(gomock.Any()).
+					Times(1).
+					Return(tasks.ResponseData{Error: sql.ErrNoRows})
+
+			},
+			checkResponse: func(response string, err error) {
+				require.Error(t, err)
+			},
+			request: fmt.Sprintf(`
+			mutation {
+				deleteTask (
+				id: "%s"
+				) 
+			}
+	  `, util.Getuuid().String()),
+			setupAuth: func(t *testing.T, tokenMaker token.Maker) string {
+				return addAuthorization(t, tokenMaker, authorizationTypeBearer, user.ID.String(), time.Minute)
+			},
+		},
+		{
+			name: "InteranServerError",
+			setupAuth: func(t *testing.T, tokenMaker token.Maker) string {
+				return addAuthorization(t, tokenMaker, authorizationTypeBearer, user.ID.String(), time.Minute)
+			},
+			buildStubs: func(store *mockdb.MockTaskusecase) {
+				store.
+					EXPECT().
+					DeleteTask(gomock.Any()).
+					Times(1).Return(tasks.ResponseData{Error: sql.ErrConnDone})
+			},
+			checkResponse: func(response string, err error) {
+				require.Error(t, err)
+				require.Error(t, err)
+				require.Empty(t, response)
+
+			},
+			request: fmt.Sprintf(`
+			mutation {
+				deleteTask (
+				id: "%s"
+				) 
+			}
+	  `, taskResp.ID),
+		},
+		{
+			name: "UnAuthorizedUser",
+			buildStubs: func(store *mockdb.MockTaskusecase) {
+				store.
+					EXPECT().
+					FetchTaskByID(gomock.Any(), gomock.Any()).
+					Times(0)
+
+			},
+			checkResponse: func(response string, err error) {
+				require.Empty(t, response)
+				require.Error(t, err)
+			},
+			request: `
+			mutation {
+				deleteTask (
+				id: "0000"
+				) 
+			}
+	  `,
+			setupAuth: func(t *testing.T, tokenMaker token.Maker) string {
+				return ""
+			},
+		},
+	}
+
+	for i := range testCases {
+		tc := testCases[i]
+		t.Run(tc.name, func(t *testing.T) {
+			var message DeleteMessage
+			config, task := newTestUsecase(t)
+			config.Directives.Auth = directives.Auth
+			tc.buildStubs(task.Task)
+			srv := NewExecutableSchema(config)
+			handler := handler.NewDefaultServer(srv)
+			cf := util.Config{
+				TokenSymmetricKey:   util.RandomString(32),
+				AccessTokenDuration: time.Minute,
+			}
+			tokenMaker, err := token.NewJWTMaker(cf.TokenSymmetricKey)
+			require.NoError(t, err)
+			c := client.New(middlewares.AuthMiddleware(tokenMaker, cf, handler))
+			bearer := tc.setupAuth(t, tokenMaker)
+			header := client.AddHeader("Authorization", bearer)
+
+			err = c.Post(tc.request, &message, header)
+
+			tc.checkResponse(message.DeleteTask, err)
+		})
+	}
+}
+
+// //////
+type DeleteMessage struct {
+	DeleteTask string `json:"deleteTask"`
+}
+
 // ////////////
 func createRandomTaskResop(t *testing.T) respTask.TaskResponse {
 	description := util.RandomString(5)

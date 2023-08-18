@@ -82,7 +82,10 @@ func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTas
 
 // DeleteTask is the resolver for the deleteTask field.
 func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (string, error) {
-	taskID := uuid.MustParse(id)
+	taskID, errr := uuid.Parse(id)
+	if errr != nil {
+		return fmt.Sprintf("%v", errr.Error()), errr
+	}
 	err := r.Task.DeleteTask(taskID)
 	if err.Error != nil {
 		return fmt.Sprintf("Error: %v", err.Error), fmt.Errorf("%v", err.Error)
