@@ -92,7 +92,10 @@ func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (string, e
 
 // GetTaskByID is the resolver for the getTaskById field.
 func (r *queryResolver) GetTaskByID(ctx context.Context, id string) (*model.TaskResponse, error) {
-	taskID := uuid.MustParse(id)
+	taskID, err := uuid.Parse(id)
+	if err != nil {
+		return &model.TaskResponse{}, err
+	}
 	data, err := r.Task.FetchTaskByID(context.Background(), taskID)
 	if err != nil {
 		return &model.TaskResponse{}, err
