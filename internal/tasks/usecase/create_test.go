@@ -2,7 +2,6 @@ package tasks
 
 import (
 	"database/sql"
-	"fmt"
 	mockdb "go-task/internal/tasks/repository/mock"
 	"time"
 
@@ -132,8 +131,7 @@ func TestCreateTaskusercase(t *testing.T) {
 
 func createRandomTask(t *testing.T) (task resp.TaskResponse, user domain.RegisterResponse) {
 	var priority = "high"
-	var dueDate = time.Now().AddDate(0, 0, 2).Local()
-	fmt.Println(dueDate)
+	var dueDate = time.Now().Add(time.Hour * 24)
 	description := util.RandomString(30)
 
 	user = domain.RegisterResponse{

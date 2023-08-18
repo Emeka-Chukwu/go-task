@@ -102,8 +102,8 @@ func ValidateSecretCode(value string) error {
 
 func ValidateTimeStamp(value time.Time) error {
 	const layout = "2006-01-02 03:04:05.999"
-	_, error := time.Parse(layout, value.String())
-	return error
+	_, err := time.Parse(layout, value.String())
+	return err
 }
 
 func ValidateTimeStampRange(start, end time.Time) error {

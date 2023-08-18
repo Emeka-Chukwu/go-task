@@ -144,7 +144,7 @@ func TestUserCreationAccount(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var tempResp LoginGraphqlResp
 			config, auth := newTestUsecase(t)
-			tc.buildStubs(auth)
+			tc.buildStubs(auth.Auth)
 			srv := NewExecutableSchema(config)
 			c := client.New(handler.NewDefaultServer(srv))
 			err := c.Post(tc.request, &tempResp)
@@ -320,7 +320,7 @@ func TestUserLoginAccount(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			var tempResp LoginUserGraphqlResp
 			config, auth := newTestUsecase(t)
-			tc.buildStubs(auth)
+			tc.buildStubs(auth.Auth)
 			srv := NewExecutableSchema(config)
 			c := client.New(handler.NewDefaultServer(srv))
 			err := c.Post(tc.request, &tempResp)
@@ -456,14 +456,13 @@ func TestGetUserByIDAccount(t *testing.T) {
 			},
 		},
 	}
-
 	for i := range testCases {
 		tc := testCases[i]
 		t.Run(tc.name, func(t *testing.T) {
 			var tempResp GetUserResponse
 			config, auth := newTestUsecase(t)
 			config.Directives.Auth = directives.Auth
-			tc.buildStubs(auth)
+			tc.buildStubs(auth.Auth)
 			srv := NewExecutableSchema(config)
 			handler := handler.NewDefaultServer(srv)
 			cf := util.Config{

@@ -19,14 +19,20 @@ import (
 
 // CreateTask is the resolver for the createTask field.
 func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) (*model.TaskResponse, error) {
-	const layout = "2006-01-02 15:04:05"
-	date := input.DueDate
-	dueDate, err := time.Parse(layout, *date)
-	if err != nil {
-		return nil, fmt.Errorf("invalid duedate")
+	var dueDate time.Time
+	var err error
+	if input.DueDate != nil {
+		const layout = "2006-01-02 15:04:05"
+		date := input.DueDate
+		dueDate, err = time.Parse(layout, *date)
+		if err != nil {
+			return nil, fmt.Errorf("invalid duedate")
+		}
 	}
+
 	payload, _ := middlewares.GetCurrentUserID(ctx)
 	userID := uuid.MustParse(payload.UserID)
+
 	data := domain.TaskModel{
 		Title:       input.Title,
 		Description: &input.Description,
@@ -38,7 +44,6 @@ func (r *mutationResolver) CreateTask(ctx context.Context, input model.NewTask) 
 	if errdetails != nil {
 		return &model.TaskResponse{}, errors.New(fmt.Sprintf("%v", errdetails))
 	}
-	fmt.Println(data)
 	respData, err := r.Task.CreateTask(data)
 	if err != nil {
 		return &model.TaskResponse{}, err
@@ -77,7 +82,10 @@ func (r *mutationResolver) UpdateTask(ctx context.Context, input model.UpdateTas
 
 // DeleteTask is the resolver for the deleteTask field.
 func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (string, error) {
-	taskID := uuid.MustParse(id)
+	taskID, errr := uuid.Parse(id)
+	if errr != nil {
+		return fmt.Sprintf("%v", errr.Error()), errr
+	}
 	err := r.Task.DeleteTask(taskID)
 	if err.Error != nil {
 		return fmt.Sprintf("Error: %v", err.Error), fmt.Errorf("%v", err.Error)
@@ -87,7 +95,10 @@ func (r *mutationResolver) DeleteTask(ctx context.Context, id string) (string, e
 
 // GetTaskByID is the resolver for the getTaskById field.
 func (r *queryResolver) GetTaskByID(ctx context.Context, id string) (*model.TaskResponse, error) {
-	taskID := uuid.MustParse(id)
+	taskID, err := uuid.Parse(id)
+	if err != nil {
+		return &model.TaskResponse{}, err
+	}
 	data, err := r.Task.FetchTaskByID(context.Background(), taskID)
 	if err != nil {
 		return &model.TaskResponse{}, err

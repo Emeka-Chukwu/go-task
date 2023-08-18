@@ -19,7 +19,13 @@ const (
 	// authorizationPayloadKey = "authorization_payload"
 )
 
-func newTestUsecase(t *testing.T) (Config, *mockdb.MockAuthusecase) {
+type UsecaseTest struct {
+	Auth  *mockdb.MockAuthusecase
+	Task  *mockdbTask.MockTaskusecase
+	Label *mockdbLabel.MockLabelusecase
+}
+
+func newTestUsecase(t *testing.T) (Config, UsecaseTest) {
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -37,7 +43,11 @@ func newTestUsecase(t *testing.T) (Config, *mockdb.MockAuthusecase) {
 		Task:  task,
 	}}
 	// c.Directives.Auth = directives.Auth
-	return c, auth
+	return c, UsecaseTest{
+		Auth:  auth,
+		Label: label,
+		Task:  task,
+	}
 }
 
 func addAuthorization(
